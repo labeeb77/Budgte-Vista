@@ -4,42 +4,32 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
-import '../../database/category/category_db.dart';
-import '../../database/transaction/transaction_db.dart';
+import '../../database/category/category_provider.dart';
 import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
 import '../category/category_popup.dart';
 import '../home/widgets/colors.dart';
 
-class AddTransactions extends StatefulWidget {
-  const AddTransactions({super.key});
+class AddTransactions extends StatelessWidget {
+    AddTransactions({super.key});
 
   static const routeName = 'add-transaction';
 
-  @override
-  State<AddTransactions> createState() => _AddTransactionsState();
-}
-
-class _AddTransactionsState extends State<AddTransactions> {
   final _formKey = GlobalKey<FormState>();
   bool _isVisibleDate = false;
 
-  DateTime? _selectedDate;
+ 
 
-  CategoryModel? selectedCategoryModel;
-  String? _categoryId;
 
   final noteEditingController = TextEditingController();
   final amountEditingController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    TransactionsDB.instance.refresh();
-  }
 
-  Future<void> addToTransaction() async {
+
+  Future<void> addToTransaction(context) async {
     final noteText = noteEditingController.text;
     final amountText = amountEditingController.text;
     if (amountText.isEmpty) {
@@ -50,33 +40,28 @@ class _AddTransactionsState extends State<AddTransactions> {
       return;
     }
 
-    // if (noteText.isEmpty) {
-    //   return;
-    // }
+   
 
-    if (_selectedDate == null) {
-      return;
-    }
-    if (_categoryId == null) {
+    
+    if (Provider.of<TransactionProvider>(context,listen: false).categoryId == null) {
       return;
     }
 
     final models = TransactionModel(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
-      category: selectedCategoryModel!,
+      category: Provider.of<TransactionProvider>(context,listen: false).selectedCategoryModel!,
       amount: parsedAmount,
       notes: noteText,
-      date: _selectedDate!,
-      type: selectedCategoryType.value,
+      date: Provider.of<TransactionProvider>(context,listen: false).selectedDate,
+      type: Provider.of<TransactionProvider>(context,listen: false).selectedCategoryType!,
     );
 
-    TransactionsDB.instance.addToTransaction(models);
-    TransactionsDB.instance.refresh();
+    await Provider.of<TransactionProvider>(context,listen: false).addToTransaction(models);
     Navigator.of(context).pop();
     AnimatedSnackBar.rectangle('Success', 'Transaction Added successfully..',
             type: AnimatedSnackBarType.success,
             brightness: Brightness.light,
-            duration: const Duration(seconds: 5))
+            duration: const Duration(seconds: 3))
         .show(
       context,
     );
@@ -88,6 +73,8 @@ class _AddTransactionsState extends State<AddTransactions> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<TransactionProvider>().refresh();
+    context.read<CategoryProvider>().refreshUI();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -108,42 +95,40 @@ class _AddTransactionsState extends State<AddTransactions> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ChoiceChip(
-                      elevation: 10,
-                      label: const Text(
-                        'Income',
-                        style: TextStyle(color: Colors.white),
+                    Consumer<TransactionProvider>(
+                      builder: (context, proValue, child) => 
+                       ChoiceChip(
+                        elevation: 10,
+                        label: const Text(
+                          'Income',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        selected:
+                            proValue.value == 0,
+                        selectedColor: const Color.fromARGB(255, 0, 148, 67),
+                        disabledColor: const Color.fromARGB(255, 129, 128, 128),
+                        onSelected: (bool selected) {
+                          proValue.incomeChoiceChip();
+                        
+                        },
                       ),
-                      selected:
-                          selectedCategoryType.value == CategoryType.income,
-                      selectedColor: const Color.fromARGB(255, 0, 148, 67),
-                      disabledColor: const Color.fromARGB(255, 129, 128, 128),
-                      onSelected: (bool selected) {
-                        setState(
-                          () {
-                            selectedCategoryType.value = CategoryType.income;
-                            _categoryId = null;
-                          },
-                        );
-                      },
                     ),
-                    ChoiceChip(
-                      elevation: 10,
-                      label: const Text('Expense',
-                          style: TextStyle(color: Colors.white)),
-                      selected:
-                          selectedCategoryType.value == CategoryType.expense,
-                      selectedColor: const Color.fromARGB(255, 153, 0, 0),
-                      disabledColor: const Color.fromARGB(255, 122, 122, 122),
-                      onSelected: (bool selected) {
-                        setState(
-                          () {
-                            selectedCategoryType.value = CategoryType.expense;
+                    Consumer<TransactionProvider>(
+                      builder: (context, proValue, child) => 
+                       ChoiceChip(
+                        elevation: 10,
+                        label: const Text('Expense',
+                            style: TextStyle(color: Colors.white)),
+                        selected:
+                            proValue.value == 1,
+                        selectedColor: const Color.fromARGB(255, 153, 0, 0),
+                        disabledColor: const Color.fromARGB(255, 122, 122, 122),
+                        onSelected: (bool selected) {
+                          proValue.expenseChoiceChip();
 
-                            _categoryId = null;
-                          },
-                        );
-                      },
+                        
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -154,47 +139,44 @@ class _AddTransactionsState extends State<AddTransactions> {
               Row(
                 children: <Widget>[
                   Flexible(
-                    child: DropdownButtonFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select category';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.category),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(width: 1))),
-                      hint: const Text('Select Category'),
-                      value: _categoryId,
-                      items: (selectedCategoryType.value == CategoryType.income
-                              ? CategoryDB.instance.incomeCategoryListListener
-                              : CategoryDB.instance.expenseCategoryListListener)
-                          .value
-                          .map(
-                        (e) {
-                          return DropdownMenuItem(
-                            value: e.id,
-                            child: Text(e.name),
-                            onTap: () {
-                              setState(
-                                () {
-                                  selectedCategoryModel = e;
-                                },
-                              );
-                            },
-                          );
+                    child: Consumer2<TransactionProvider,CategoryProvider>(
+                      builder: (context, valueTr,valueCt, child) {
+                        return DropdownButtonFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select category';
+                          }
+                          return null;
                         },
-                      ).toList(),
-                      onChanged: ((selectedValue) {
-                        setState(
-                          () {
-                            _categoryId = selectedValue;
-                            CategoryDB.instance.refreshUI();
+                        decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.category),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(width: 1))),
+                        hint: const Text('Select Category'),
+                        value: valueTr.categoryId,
+                        items: (valueTr.selectedCategoryType == CategoryType.income
+                                ? valueCt.incomeCategoryProvider
+                                : valueCt.expenseCategoryProvider)
+                            
+                            .map(
+                          (e) {
+                            return DropdownMenuItem(
+                              value: e.id,
+                              child: Text(e.name),
+                              onTap: () {
+                                context.read<CategoryProvider>().refreshUI();
+                                valueTr.selectedCategoryModel = e;
+                             
+                              },
+                            );
                           },
-                        );
-                      }),
+                        ).toList(),
+                        onChanged: ((selectedValue) {
+                         valueTr.categoryId = selectedValue;
+                        }),
+                      );
+                      },
                     ),
                   ),
                   IconButton(
@@ -245,42 +227,34 @@ class _AddTransactionsState extends State<AddTransactions> {
               const SizedBox(
                 height: 15,
               ),
-              TextButton.icon(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(
-                          color: ThemeColor.themeColors,
-                        )),
+              Consumer<TransactionProvider>(
+                builder: (context, value, child) => 
+                 TextButton.icon(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(
+                            color: ThemeColor.themeColors,
+                          )),
+                    ),
                   ),
+                  onPressed: () async {
+                    final selectedDateTemp = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate:
+                            DateTime.now().subtract(const Duration(days: 30)),
+                        lastDate: DateTime.now());
+                        value.dateSelect(selectedDateTemp);
+              
+              
+                  },
+                  icon: const Icon(Icons.calendar_month),
+                  label: Text(value.selectedDate == null
+                      ? parseDate(DateTime.now())
+                      : parseDate(context.read<TransactionProvider>().selectedDate)),
                 ),
-                onPressed: () async {
-                  final selectedDateTemp = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: 30)),
-                      lastDate: DateTime.now());
-
-                  if (selectedDateTemp == null) {
-                    setState(
-                      () {
-                        _selectedDate = DateTime.now();
-                      },
-                    );
-                  } else {
-                    setState(
-                      () {
-                        _selectedDate = selectedDateTemp;
-                      },
-                    );
-                  }
-                },
-                icon: const Icon(Icons.calendar_month),
-                label: Text(_selectedDate == null
-                    ? parseDate(DateTime.now())
-                    : parseDate(_selectedDate!)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
@@ -307,31 +281,11 @@ class _AddTransactionsState extends State<AddTransactions> {
                     ),
                   ),
                   onPressed: () {
-                    if (_selectedDate == null) {
-                      setState(
-                        () {
-                          _selectedDate = DateTime.now();
-                        },
-                      );
-                    } else {
-                      setState(
-                        () {
-                          _isVisibleDate = false;
-                        },
-                      );
-                    }
-                    if (_categoryId == null) {
-                      setState(
-                        () {},
-                      );
-                    } else {
-                      setState(
-                        () {},
-                      );
-                    }
+                    
+                  
 
                     if (_formKey.currentState!.validate()) {
-                      addToTransaction();
+                      addToTransaction(context);
                     }
                   },
                   child: const Padding(
@@ -348,4 +302,10 @@ class _AddTransactionsState extends State<AddTransactions> {
       ),
     );
   }
+
+
 }
+
+
+  
+

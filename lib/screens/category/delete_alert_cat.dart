@@ -1,8 +1,7 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
-
-
-import '../../database/category/category_db.dart';
+import 'package:my_money1/database/category/category_provider.dart';
+import 'package:provider/provider.dart';
 
 alertDeleteCategory(BuildContext context, int id) {
   showDialog(
@@ -13,9 +12,13 @@ alertDeleteCategory(BuildContext context, int id) {
         actions: [
           TextButton(
               onPressed: () {
-                CategoryDB.instance.deleteCategory(id);
-                CategoryDB.instance.incomeCategoryListListener;
-                CategoryDB.instance.expenseCategoryListListener;
+                Provider.of<CategoryProvider>(context, listen: false)
+                    .deleteCategory(id);
+                Provider.of<CategoryProvider>(context, listen: false)
+                    .incomeCategoryProvider;
+                Provider.of<CategoryProvider>(context, listen: false)
+                    .expenseCategoryProvider;
+
                 Navigator.of(context).pop();
                 AnimatedSnackBar.rectangle(
                         'Success', 'Category deleted successfully..',

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/home/show_screen.dart';
 import 'package:my_money1/screens/home/widgets/bottom_nav.dart';
 import 'package:my_money1/screens/home/widgets/colors.dart';
+import 'package:provider/provider.dart';
 
-import '../../database/category/category_db.dart';
-import '../../database/transaction/transaction_db.dart';
+import '../../database/category/category_provider.dart';
 import '../category/screen_category.dart';
 import '../settings/screen_settings.dart';
 import '../statitics/screen_statistics.dart';
@@ -23,8 +24,8 @@ class ScreenHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TransactionsDB.instance.refresh();
-    CategoryDB.instance.refreshUI();
+    Provider.of<TransactionProvider>(context,listen: false).refresh();
+    Provider.of<CategoryProvider>(context,listen: false).refreshUI();
 
     return Scaffold(
       bottomNavigationBar: const BottomNav(),

@@ -1,8 +1,8 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../database/category/category_db.dart';
+import 'package:my_money1/database/category/category_provider.dart';
+import 'package:provider/provider.dart';
 import '../../models/category/category_model.dart';
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
@@ -56,8 +56,10 @@ Future<void> categoryAddPopup(
                       name: add,
                       type: boolValue);
 
-                  CategoryDB.instance.insertCategory(category);
-                  CategoryDB.instance.refreshUI();
+                 
+                  Provider.of<CategoryProvider>(context,listen: false).refreshUI();
+                  Provider.of<CategoryProvider>(context,listen: false).insertCategory(category);
+                  
                   Navigator.of(ctx).pop();
                   AnimatedSnackBar.rectangle(
                           'Success', 'Category added successfully..',

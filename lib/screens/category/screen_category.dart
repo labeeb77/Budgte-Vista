@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_money1/database/category/category_provider.dart';
+import 'package:provider/provider.dart';
 
 
 import '../../database/category/category_db.dart';
@@ -26,7 +28,7 @@ class _ScreenCategoryState extends State<ScreenCategory>
   void initState() {
     tabController = TabController(length: 2, vsync: this);
 
-    CategoryDB().refreshUI();
+    Provider.of<CategoryProvider>(context,listen: false).refreshUI();
 
     super.initState();
   }

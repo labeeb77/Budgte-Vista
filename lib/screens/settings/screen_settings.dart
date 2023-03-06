@@ -14,7 +14,7 @@ import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
 import '../home/screen_home.dart';
 import '../home/widgets/colors.dart';
-import '../splash.dart';
+import '../splash/splash_screen.dart';
 
 class ScreenSettings extends StatelessWidget {
   const ScreenSettings({super.key});

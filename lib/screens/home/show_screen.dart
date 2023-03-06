@@ -7,6 +7,7 @@ import 'package:my_money1/screens/home/widgets/colors.dart';
 import '../sort_income,expense/sorted.dart';
 import '../transactoins/add_transaction.dart';
 import '../transactoins/recent_transaction.dart';
+
 import '../viewall/search_widget.dart';
 import '../viewall/view_all.dart';
 
@@ -135,7 +136,7 @@ class ShowScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AddTransactions(),
+                builder: (context) =>  AddTransactions(),
               ),
             ),
             child: const Icon(

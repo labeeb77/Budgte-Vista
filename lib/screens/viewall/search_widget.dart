@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../database/category/category_db.dart';
+import '../../database/category/category_provider.dart';
 import '../../database/transaction/transaction_db.dart';
 import '../../models/transaction/transaction_model.dart';
 import '../transactoins/slidable_widget.dart';
@@ -30,8 +33,7 @@ class SearchTransaction extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    TransactionsDB.instance.refresh();
-    CategoryDB.instance.refreshUI();
+    Provider.of<TransactionProvider>(context,listen: false).refresh();
     return ValueListenableBuilder(
       valueListenable: TransactionsDB.instance.transactionListNotfier,
       builder:

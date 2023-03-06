@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:my_money1/database/category/category_provider.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
+import 'package:my_money1/screens/onboard%20screen/onboard_provider.dart';
 
-import 'package:my_money1/screens/splash.dart';
+import 'package:my_money1/screens/splash/splash_screen.dart';
 import 'package:my_money1/screens/transactoins/add_transaction.dart';
+import 'package:provider/provider.dart';
 
 import 'models/category/category_model.dart';
 import 'models/transaction/transaction_model.dart';
@@ -20,7 +24,7 @@ Future<void> main() async {
   if (!Hive.isAdapterRegistered(TransactionModelAdapter().typeId)) {
     Hive.registerAdapter(TransactionModelAdapter());
   }
-  runApp( const MoneyManager());
+  runApp(const MoneyManager());
 }
 
 class MoneyManager extends StatelessWidget {
@@ -28,13 +32,26 @@ class MoneyManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
-      routes: {
-        AddTransactions.routeName: (context) => const AddTransactions(),
-      },
-      theme: ThemeData(primarySwatch: Colors.deepOrange),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => OnboardProvider(),
+        ),
+         ChangeNotifierProvider(
+          create: (context) => CategoryProvider(),
+        ),
+         ChangeNotifierProvider(
+          create: (context) => TransactionProvider(),
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(),
+        routes: {
+          AddTransactions.routeName: (context) =>  AddTransactions(),
+        },
+        theme: ThemeData(primarySwatch: Colors.deepOrange),
+      ),
     );
   }
 }
