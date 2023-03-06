@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../database/transaction/transaction_db.dart';
 import '../transactoins/transaction_list.dart';
 
+   
 class SearchAll extends StatefulWidget {
   const SearchAll({Key? key}) : super(key: key);
 
