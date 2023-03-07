@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
 
-import '../../database/transaction/transaction_db.dart';
 import '../home/widgets/colors.dart';
-import '../transactoins/transaction_list.dart';
 import 'expense_chart.dart';
 import 'income_chart.dart';
 import 'overview_chart.dart';
@@ -25,13 +25,14 @@ class _ScreenStatiticsState extends State<ScreenStatitics>
   void initState() {
     super.initState();
     tabsController = TabController(length: 3, vsync: this);
-
-    overViewNotifier.value =
-        TransactionsDB.instance.transactionListNotfier.value;
   }
 
   @override
   Widget build(BuildContext context) {
+WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  context.read<TransactionProvider>().overViewGraphtransaction = context.read<TransactionProvider>().transactionList;
+});
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -68,92 +69,73 @@ class _ScreenStatiticsState extends State<ScreenStatitics>
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             ),
-                            PopupMenuButton<int>(
-                              shape: ContinuousRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40)),
-                              child: const Icon(
-                                Icons.arrow_drop_down,
-                                size: 25,
+                            Consumer<TransactionProvider>(
+                              builder: (context, value, child) => 
+                               PopupMenuButton<int>(
+                                shape: ContinuousRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40)),
+                                child: const Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 25,
+                                ),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: const Text('All'),
+                                    onTap: () {
+                                      value.setOverviewGraph = value.transactionList;
+                                      value.dateNotifier = "All";
+                                    
+                                    },
+                                  ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: const Text('Today'),
+                                    onTap: () {
+                                       value.setOverviewGraph = value.transactionList
+                                          .where((element) =>
+                                              element.date.day ==
+                                                  DateTime.now().day &&
+                                              element.date.month ==
+                                                  DateTime.now().month &&
+                                              element.date.year ==
+                                                  DateTime.now().year)
+                                          .toList();
+                                      value.dateNotifier = 'Today';
+                                    },
+                                  ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: const Text('Yesterday'),
+                                    onTap: () {
+                                       value.setOverviewGraph = value.transactionList
+                                          .where((element) =>
+                                              element.date.day ==
+                                                  DateTime.now().day - 1 &&
+                                              element.date.month ==
+                                                  DateTime.now().month &&
+                                              element.date.year ==
+                                                  DateTime.now().year)
+                                          .toList();
+                                     value.dateNotifier = "Yesterday";
+                                    },
+                                  ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: const Text('Month'),
+                                    onTap: () {
+                                       value.setOverviewGraph = value.transactionList
+                                          .where((element) =>
+                                              element.date.month ==
+                                                  DateTime.now().month &&
+                                              element.date.year ==
+                                                  DateTime.now().year)
+                                          .toList();
+                                     value.dateNotifier = "Month";
+                                    },
+                                  )
+                                ],
                               ),
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: const Text('All'),
-                                  onTap: () {
-
-                                    overviewChartList.value = TransactionsDB
-                                        .instance.transactionListNotfier.value;
-                                    setState(
-                                      () {
-                                        filterTitle = 'All';
-                                      },
-                                    );
-                                  },
-                                ),
-                                PopupMenuItem(
-                                  value: 2,
-                                  child: const Text('Today'),
-                                  onTap: () {
-                                    overviewChartList.value = TransactionsDB
-                                        .instance.transactionListNotfier.value;
-                                    overviewChartList.value = overViewNotifier
-                                        .value
-                                        .where((element) =>
-                                            element.date.day ==
-                                                DateTime.now().day &&
-                                            element.date.month ==
-                                                DateTime.now().month &&
-                                            element.date.year ==
-                                                DateTime.now().year)
-                                        .toList();
-                                    setState(
-                                      () {
-                                        filterTitle = 'Today';
-                                      },
-                                    );
-                                  },
-                                ),
-                                PopupMenuItem(
-                                  value: 2,
-                                  child: const Text('Yesterday'),
-                                  onTap: () {
-                                    overviewChartList.value = TransactionsDB
-                                        .instance.transactionListNotfier.value
-                                        .where((element) =>
-                                            element.date.day ==
-                                                DateTime.now().day - 1 &&
-                                            element.date.month ==
-                                                DateTime.now().month &&
-                                            element.date.year ==
-                                                DateTime.now().year)
-                                        .toList();
-                                    setState(
-                                      () {
-                                        filterTitle = 'Yesterday';
-                                      },
-                                    );
-                                  },
-                                ),
-                                PopupMenuItem(
-                                  value: 2,
-                                  child: const Text('Month'),
-                                  onTap: () {
-                                    overviewChartList.value = TransactionsDB
-                                        .instance.transactionListNotfier.value
-                                        .where((element) =>
-                                            element.date.month ==
-                                                DateTime.now().month &&
-                                            element.date.year ==
-                                                DateTime.now().year)
-                                        .toList();
-                                    setState(
-                                      () {
-                                        filterTitle = 'Month';
-                                      },
-                                    );
-                                  },
-                                )
-                              ],
                             )
                           ],
                         ),

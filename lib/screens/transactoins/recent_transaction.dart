@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/transactoins/slidable_widget.dart';
+import 'package:provider/provider.dart';
 
 
-import '../../database/transaction/transaction_db.dart';
-import '../../models/transaction/transaction_model.dart';
 import '../home/widgets/colors.dart';
 
 class RecentTransaction extends StatelessWidget {
@@ -12,11 +12,10 @@ class RecentTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: TransactionsDB.instance.transactionListNotfier,
+    return Consumer<TransactionProvider>(
       builder:
-          (BuildContext context, List<TransactionModel> newList, Widget? _) {
-        return newList.isEmpty
+          (context,newList,child) {
+        return newList.transactionList.isEmpty
             ? Center(
                 child: Text('No transactions found',
                     style:
@@ -28,7 +27,7 @@ class RecentTransaction extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final trValue = newList[index];
+                      final trValue = newList.transactionList[index];
                       return SlidableWidget(
                         trValue: trValue,
                         index: index,
@@ -39,7 +38,7 @@ class RecentTransaction extends StatelessWidget {
                         height: 1,
                       );
                     },
-                    itemCount: newList.length > 3 ? 3 : newList.length),
+                    itemCount: newList.transactionList.length > 3 ? 3 : newList.transactionList.length),
               );
       },
     );

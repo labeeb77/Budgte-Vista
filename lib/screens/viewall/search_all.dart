@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
-import '../../database/transaction/transaction_db.dart';
-import '../transactoins/transaction_list.dart';
-
-   
-class SearchAll extends StatefulWidget {
+class SearchAll extends StatelessWidget {
   const SearchAll({Key? key}) : super(key: key);
 
-  @override
-  State<SearchAll> createState() => _SearchAllState();
-}
-
-class _SearchAllState extends State<SearchAll> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,7 +31,7 @@ class _SearchAllState extends State<SearchAll> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
-            onChanged: (value) => displayResults(value),
+            onChanged: (value) => displayResults(value, context),
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Search',
@@ -64,12 +57,15 @@ class _SearchAllState extends State<SearchAll> {
     );
   }
 
-  displayResults(String query) {
+  displayResults(String query, BuildContext context) {
     if (query.isEmpty) {
-      overViewNotifier.value =
-          TransactionsDB.instance.transactionListNotfier.value;
+      context.read<TransactionProvider>().overViewNotifier =
+          context.read<TransactionProvider>().transactionList;
+      context.read<TransactionProvider>().notifyListeners();
     } else {
-      overViewNotifier.value = overViewNotifier.value
+      context.read<TransactionProvider>().overViewNotifier = context
+          .read<TransactionProvider>()
+          .transactionList
           .where(
             (element) =>
                 element.category.name
@@ -82,6 +78,7 @@ class _SearchAllState extends State<SearchAll> {
                 element.notes.toUpperCase().contains(query.toUpperCase()),
           )
           .toList();
+      context.read<TransactionProvider>().notifyListeners();
     }
   }
 }

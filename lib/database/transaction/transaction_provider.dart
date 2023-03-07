@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:my_money1/screens/transactoins/filters/overview_filter.dart';
 
 
 import '../../models/category/category_model.dart';
@@ -26,6 +27,12 @@ class TransactionProvider extends ChangeNotifier {
   // }
 
   List<TransactionModel>transactionList = [];
+  List<TransactionModel>overViewNotifier = [];
+  List<TransactionModel>overViewGraphtransaction = [];
+  String categoryNotifier = ('All');
+  String dateNotifier = ('All');
+
+  
   String? categoryId;
    DateTime selectedDate = DateTime.now();
    CategoryModel? selectedCategoryModel;
@@ -58,6 +65,30 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
    }
 
+   set setOverviewTransaction(List<TransactionModel>overViewList){
+    overViewNotifier = overViewList;
+    notifyListeners();
+   }
+
+   set setOverviewGraph(List<TransactionModel> overViewGraphNewList){
+    overViewGraphtransaction = overViewGraphNewList;
+    notifyListeners();
+   }
+
+   set setDateFilter(String dateFilterNewList){
+    dateNotifier = dateFilterNewList;
+    notifyListeners();
+   }
+    set setShowCategory(String overShowcategory){
+      categoryNotifier = overShowcategory;
+      notifyListeners();
+    }
+
+    set setTransactionListNotifire(List<TransactionModel> transactonNewList){
+      transactionList = transactonNewList;
+      notifyListeners();
+    }
+
 
 
 
@@ -73,7 +104,7 @@ class TransactionProvider extends ChangeNotifier {
 
   Future<void> refresh() async {
     final list = await getAllTransactions();
-    list.sort(
+    list.sort(  
       (a, b) => b.date.compareTo(a.date),
     );
     transactionList.clear();

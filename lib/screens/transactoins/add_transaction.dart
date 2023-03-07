@@ -14,20 +14,15 @@ import '../category/category_popup.dart';
 import '../home/widgets/colors.dart';
 
 class AddTransactions extends StatelessWidget {
-    AddTransactions({super.key});
+  AddTransactions({super.key});
 
   static const routeName = 'add-transaction';
 
   final _formKey = GlobalKey<FormState>();
-  bool _isVisibleDate = false;
-
- 
-
+  final bool _isVisibleDate = false;
 
   final noteEditingController = TextEditingController();
   final amountEditingController = TextEditingController();
-
-
 
   Future<void> addToTransaction(context) async {
     final noteText = noteEditingController.text;
@@ -40,23 +35,25 @@ class AddTransactions extends StatelessWidget {
       return;
     }
 
-   
-
-    
-    if (Provider.of<TransactionProvider>(context,listen: false).categoryId == null) {
+    if (Provider.of<TransactionProvider>(context, listen: false).categoryId ==
+        null) {
       return;
     }
 
     final models = TransactionModel(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
-      category: Provider.of<TransactionProvider>(context,listen: false).selectedCategoryModel!,
+      category: Provider.of<TransactionProvider>(context, listen: false)
+          .selectedCategoryModel!,
       amount: parsedAmount,
       notes: noteText,
-      date: Provider.of<TransactionProvider>(context,listen: false).selectedDate,
-      type: Provider.of<TransactionProvider>(context,listen: false).selectedCategoryType!,
+      date:
+          Provider.of<TransactionProvider>(context, listen: false).selectedDate,
+      type: Provider.of<TransactionProvider>(context, listen: false)
+          .selectedCategoryType!,
     );
 
-    await Provider.of<TransactionProvider>(context,listen: false).addToTransaction(models);
+    await Provider.of<TransactionProvider>(context, listen: false)
+        .addToTransaction(models);
     Navigator.of(context).pop();
     AnimatedSnackBar.rectangle('Success', 'Transaction Added successfully..',
             type: AnimatedSnackBarType.success,
@@ -96,37 +93,30 @@ class AddTransactions extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Consumer<TransactionProvider>(
-                      builder: (context, proValue, child) => 
-                       ChoiceChip(
+                      builder: (context, proValue, child) => ChoiceChip(
                         elevation: 10,
                         label: const Text(
                           'Income',
                           style: TextStyle(color: Colors.white),
                         ),
-                        selected:
-                            proValue.value == 0,
+                        selected: proValue.value == 0,
                         selectedColor: const Color.fromARGB(255, 0, 148, 67),
                         disabledColor: const Color.fromARGB(255, 129, 128, 128),
                         onSelected: (bool selected) {
                           proValue.incomeChoiceChip();
-                        
                         },
                       ),
                     ),
                     Consumer<TransactionProvider>(
-                      builder: (context, proValue, child) => 
-                       ChoiceChip(
+                      builder: (context, proValue, child) => ChoiceChip(
                         elevation: 10,
                         label: const Text('Expense',
                             style: TextStyle(color: Colors.white)),
-                        selected:
-                            proValue.value == 1,
+                        selected: proValue.value == 1,
                         selectedColor: const Color.fromARGB(255, 153, 0, 0),
                         disabledColor: const Color.fromARGB(255, 122, 122, 122),
                         onSelected: (bool selected) {
                           proValue.expenseChoiceChip();
-
-                        
                         },
                       ),
                     ),
@@ -139,43 +129,42 @@ class AddTransactions extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Flexible(
-                    child: Consumer2<TransactionProvider,CategoryProvider>(
-                      builder: (context, valueTr,valueCt, child) {
+                    child: Consumer2<TransactionProvider, CategoryProvider>(
+                      builder: (context, valueTr, valueCt, child) {
                         return DropdownButtonFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select category';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.category),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(width: 1))),
-                        hint: const Text('Select Category'),
-                        value: valueTr.categoryId,
-                        items: (valueTr.selectedCategoryType == CategoryType.income
-                                ? valueCt.incomeCategoryProvider
-                                : valueCt.expenseCategoryProvider)
-                            
-                            .map(
-                          (e) {
-                            return DropdownMenuItem(
-                              value: e.id,
-                              child: Text(e.name),
-                              onTap: () {
-                                context.read<CategoryProvider>().refreshUI();
-                                valueTr.selectedCategoryModel = e;
-                             
-                              },
-                            );
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select category';
+                            }
+                            return null;
                           },
-                        ).toList(),
-                        onChanged: ((selectedValue) {
-                         valueTr.categoryId = selectedValue;
-                        }),
-                      );
+                          decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.category),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(width: 1))),
+                          hint: const Text('Select Category'),
+                          value: valueTr.categoryId,
+                          items: (valueTr.selectedCategoryType ==
+                                      CategoryType.income
+                                  ? valueCt.incomeCategoryProvider
+                                  : valueCt.expenseCategoryProvider)
+                              .map(
+                            (e) {
+                              return DropdownMenuItem(
+                                value: e.id,
+                                child: Text(e.name),
+                                onTap: () {
+                                  context.read<CategoryProvider>().refreshUI();
+                                  valueTr.selectedCategoryModel = e;
+                                },
+                              );
+                            },
+                          ).toList(),
+                          onChanged: ((selectedValue) {
+                            valueTr.categoryId = selectedValue;
+                          }),
+                        );
                       },
                     ),
                   ),
@@ -228,8 +217,7 @@ class AddTransactions extends StatelessWidget {
                 height: 15,
               ),
               Consumer<TransactionProvider>(
-                builder: (context, value, child) => 
-                 TextButton.icon(
+                builder: (context, value, child) => TextButton.icon(
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -246,14 +234,13 @@ class AddTransactions extends StatelessWidget {
                         firstDate:
                             DateTime.now().subtract(const Duration(days: 30)),
                         lastDate: DateTime.now());
-                        value.dateSelect(selectedDateTemp);
-              
-              
+                    value.dateSelect(selectedDateTemp);
                   },
                   icon: const Icon(Icons.calendar_month),
                   label: Text(value.selectedDate == null
                       ? parseDate(DateTime.now())
-                      : parseDate(context.read<TransactionProvider>().selectedDate)),
+                      : parseDate(
+                          context.read<TransactionProvider>().selectedDate)),
                 ),
               ),
               Padding(
@@ -281,9 +268,6 @@ class AddTransactions extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    
-                  
-
                     if (_formKey.currentState!.validate()) {
                       addToTransaction(context);
                     }
@@ -302,10 +286,4 @@ class AddTransactions extends StatelessWidget {
       ),
     );
   }
-
-
 }
-
-
-  
-

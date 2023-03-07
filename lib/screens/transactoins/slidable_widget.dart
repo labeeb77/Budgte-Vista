@@ -9,7 +9,7 @@ import '../../database/transaction/transaction_db.dart';
 import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
 
-class SlidableWidget extends StatefulWidget {
+class SlidableWidget extends StatelessWidget {
   const SlidableWidget({
     super.key,
     required this.trValue,
@@ -18,17 +18,6 @@ class SlidableWidget extends StatefulWidget {
 
   final TransactionModel trValue;
   final int index;
-
-  @override
-  State<SlidableWidget> createState() => _SlidableWidgetState();
-}
-
-class _SlidableWidgetState extends State<SlidableWidget> {
-  @override
-  void initState() {
-    TransactionsDB.instance.refresh();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +30,8 @@ class _SlidableWidgetState extends State<SlidableWidget> {
               MaterialPageRoute(
                 builder: (context) {
                   return UpdateTransaction(
-                    id: widget.index,
-                    object: widget.trValue,
+                    id: index,
+                    object: trValue,
                   );
                 },
               ),
@@ -63,8 +52,7 @@ class _SlidableWidgetState extends State<SlidableWidget> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        TransactionsDB.instance.deleteTransaction(widget.index);
-                        TransactionsDB.instance.refresh();
+                        
                         Navigator.of(context).pop();
                         AnimatedSnackBar.rectangle(
                                 'Success', 'Transaction deleted successfully..',
@@ -99,7 +87,7 @@ class _SlidableWidgetState extends State<SlidableWidget> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: ListTile(
-          leading: widget.trValue.type == CategoryType.income
+          leading: trValue.type == CategoryType.income
               ? const Icon(
                   Icons.arrow_circle_up_outlined,
                   color: Color.fromARGB(255, 42, 131, 45),
@@ -110,11 +98,11 @@ class _SlidableWidgetState extends State<SlidableWidget> {
                   color: Color.fromARGB(255, 194, 42, 31),
                   size: 38,
                 ),
-          title: Text(widget.trValue.category.name),
+          title: Text(trValue.category.name),
           subtitle: Text(
-            parseDate(widget.trValue.date),
+            parseDate(trValue.date),
           ),
-          trailing: Text(' ₹ ${widget.trValue.amount}'),
+          trailing: Text(' ₹ ${trValue.amount}'),
         ),
       ),
     );
