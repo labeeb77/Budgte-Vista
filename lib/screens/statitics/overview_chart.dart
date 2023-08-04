@@ -2,16 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'package:syncfusion_flutter_charts/charts.dart';
-
-import '../../database/transaction/transaction_db.dart';
-import '../../models/transaction/transaction_model.dart';
 import '../home/widgets/colors.dart';
-import '../sort_income,expense/sorted.dart';
-
-ValueNotifier<List<TransactionModel>> overviewChartList =
-    ValueNotifier(TransactionsDB.instance.transactionListNotfier.value);
 
 class OverviewChart extends StatelessWidget {
   const OverviewChart({super.key});
@@ -22,8 +14,8 @@ class OverviewChart extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Consumer<TransactionProvider>(
         builder: (context, value, child) {
-          Map incomeMap = {"name": "Income", "amount": incomeTotal.value};
-          Map expenseMap = {"name": "Expense", "amount": expenseTotal.value};
+          Map incomeMap = {"name": "Income", "amount": value.incomeTotal};
+          Map expenseMap = {"name": "Expense", "amount": value.expenseTotal};
           List<Map> chartList = [incomeMap, expenseMap];
           return value.overViewGraphtransaction.isEmpty
               ? Center(
@@ -35,7 +27,7 @@ class OverviewChart extends StatelessWidget {
                   padding: const EdgeInsets.all(25.0),
                   child: SfCircularChart(
                     backgroundColor: Colors.white,
-                    legend: Legend(
+                    legend: const Legend(
                         isVisible: true,
                         overflowMode: LegendItemOverflowMode.scroll),
                     series: <CircularSeries>[

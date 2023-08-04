@@ -2,10 +2,10 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/transactoins/update_transaction.dart';
+import 'package:provider/provider.dart';
 
-
-import '../../database/transaction/transaction_db.dart';
 import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
 
@@ -43,42 +43,45 @@ class SlidableWidget extends StatelessWidget {
           //borderRadius: BorderRadius.all(Radius.circular(6)),
         ),
         SlidableAction(
-          onPressed: (context) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Do you want to delete this transaction ?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        
-                        Navigator.of(context).pop();
-                        AnimatedSnackBar.rectangle(
-                                'Success', 'Transaction deleted successfully..',
-                                type: AnimatedSnackBarType.success,
-                                brightness: Brightness.light,
-                                duration: const Duration(seconds: 5))
-                            .show(
-                          context,
-                        );
-                      },
-                      child: const Text('Yes'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('No'),
-                    )
-                  ],
-                );
-              },
-            );
-          },
-          backgroundColor: const Color.fromARGB(255, 187, 13, 13),
-          icon: Icons.delete,
-        ),
+         onPressed: (context) {
+           showDialog(
+             context: context,
+             builder: (context) {
+               return AlertDialog(
+                 title: const Text('Do you want to delete this transaction ?'),
+                 actions: [
+                   TextButton(
+                     onPressed: ()async {
+                    await   Provider.of<TransactionProvider>(context,listen: false).deleteTransaction(index           );
+                       // ignore: use_build_context_synchronously
+                       Navigator.of(context).pop();
+                       // ignore: use_build_context_synchronously
+                       AnimatedSnackBar.rectangle(
+                               'Success', 'Transaction deleted successfully..',
+                               type: AnimatedSnackBarType.success,
+                               brightness: Brightness.light,
+                               duration: const Duration(seconds: 5))
+                           .show(
+                         context,
+                       );
+                     },
+                     child: const Text('Yes'),
+                   ),
+                   TextButton(
+                     onPressed: () {
+      
+                       Navigator.of(context).pop();
+                     },
+                     child: const Text('No'),
+                   )
+                 ],
+               ); 
+             },
+           );
+         },
+         backgroundColor: const Color.fromARGB(255, 187, 13, 13),
+         icon: Icons.delete,
+          ),
       ]),
       child: Card(
         color: const Color.fromARGB(255, 255, 255, 255),

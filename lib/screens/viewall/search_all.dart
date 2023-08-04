@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
 class SearchAll extends StatelessWidget {
-  const SearchAll({Key? key}) : super(key: key);
+   SearchAll({Key? key}) : super(key: key);
+   final TextEditingController _searchQueryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +34,28 @@ class SearchAll extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
-            onChanged: (value) => displayResults(value, context),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            controller: _searchQueryController,
+            onChanged: (value) {
+              
+              displayResults(value, context);
+              log(value);
+            },
+            decoration:  InputDecoration(
+              border: const OutlineInputBorder(),
               hintText: 'Search',
-              suffixIcon: Icon(
-                Icons.search_rounded,
-                color: Colors.black38,
-                size: 30,
-              ),
-              enabledBorder: UnderlineInputBorder(
+              suffixIcon: IconButton(onPressed: (){
+                _searchQueryController.clear();
+                context.read<TransactionProvider>().overViewNotifier = context.read<TransactionProvider>().transactionList;
+                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                context.read<TransactionProvider>().notifyListeners();
+              },
+               icon: const Icon(Icons.close,color: Colors.black,)),
+              enabledBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.white,
                 ),
               ),
-              focusedBorder: UnderlineInputBorder(
+              focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.blueGrey,
                 ),
@@ -59,9 +69,8 @@ class SearchAll extends StatelessWidget {
 
   displayResults(String query, BuildContext context) {
     if (query.isEmpty) {
-      context.read<TransactionProvider>().overViewNotifier =
+      context.read<TransactionProvider>().overViewGraphtransaction =
           context.read<TransactionProvider>().transactionList;
-      context.read<TransactionProvider>().notifyListeners();
     } else {
       context.read<TransactionProvider>().overViewNotifier = context
           .read<TransactionProvider>()
@@ -71,14 +80,12 @@ class SearchAll extends StatelessWidget {
                 element.category.name
                     .toLowerCase()
                     .contains(query.toLowerCase()) ||
-                element.category.name
-                    .toUpperCase()
-                    .contains(query.toUpperCase()) ||
-                element.notes.toLowerCase().contains(query.toLowerCase()) ||
-                element.notes.toUpperCase().contains(query.toUpperCase()),
+                element.notes.toLowerCase().contains(query.toLowerCase()),
+              
           )
           .toList();
-      context.read<TransactionProvider>().notifyListeners();
+          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+          context.read<TransactionProvider>().notifyListeners();
     }
   }
 }

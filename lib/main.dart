@@ -50,7 +50,10 @@ class MoneyManager extends StatelessWidget {
         routes: {
           AddTransactions.routeName: (context) =>  AddTransactions(),
         },
-        theme: ThemeData(primarySwatch: Colors.deepOrange),
+        theme: ThemeData(
+
+          primaryColor: Colors.transparent
+        ),
       ),
     );
   }

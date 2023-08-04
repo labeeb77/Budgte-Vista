@@ -237,6 +237,7 @@ class AddTransactions extends StatelessWidget {
                     value.dateSelect(selectedDateTemp);
                   },
                   icon: const Icon(Icons.calendar_month),
+                  // ignore: unnecessary_null_comparison
                   label: Text(value.selectedDate == null
                       ? parseDate(DateTime.now())
                       : parseDate(

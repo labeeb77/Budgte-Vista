@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-
 import '../home/widgets/colors.dart';
 import 'expense_chart.dart';
 import 'income_chart.dart';
@@ -29,15 +28,18 @@ class _ScreenStatiticsState extends State<ScreenStatitics>
 
   @override
   Widget build(BuildContext context) {
-WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  context.read<TransactionProvider>().overViewGraphtransaction = context.read<TransactionProvider>().transactionList;
-});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<TransactionProvider>().overViewGraphtransaction =
+          context.read<TransactionProvider>().transactionList;
+    });
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: ThemeColor.themeColors,
-        title:  Text('Statistics', style: GoogleFonts.quicksand(color: const Color.fromARGB(255, 255, 255, 255))),
+        title: Text('Statistics',
+            style: GoogleFonts.quicksand(
+                color: const Color.fromARGB(255, 255, 255, 255))),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -70,8 +72,8 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                             Consumer<TransactionProvider>(
-                              builder: (context, value, child) => 
-                               PopupMenuButton<int>(
+                              builder: (context, value, child) =>
+                                  PopupMenuButton<int>(
                                 shape: ContinuousRectangleBorder(
                                     borderRadius: BorderRadius.circular(40)),
                                 child: const Icon(
@@ -83,16 +85,17 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                     value: 1,
                                     child: const Text('All'),
                                     onTap: () {
-                                      value.setOverviewGraph = value.transactionList;
+                                      value.setOverviewGraph =
+                                          value.transactionList;
                                       value.dateNotifier = "All";
-                                    
                                     },
                                   ),
                                   PopupMenuItem(
                                     value: 2,
                                     child: const Text('Today'),
                                     onTap: () {
-                                       value.setOverviewGraph = value.transactionList
+                                      value.setOverviewGraph = value
+                                          .transactionList
                                           .where((element) =>
                                               element.date.day ==
                                                   DateTime.now().day &&
@@ -108,7 +111,8 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                     value: 2,
                                     child: const Text('Yesterday'),
                                     onTap: () {
-                                       value.setOverviewGraph = value.transactionList
+                                      value.setOverviewGraph = value
+                                          .transactionList
                                           .where((element) =>
                                               element.date.day ==
                                                   DateTime.now().day - 1 &&
@@ -117,21 +121,22 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                               element.date.year ==
                                                   DateTime.now().year)
                                           .toList();
-                                     value.dateNotifier = "Yesterday";
+                                      value.dateNotifier = "Yesterday";
                                     },
                                   ),
                                   PopupMenuItem(
                                     value: 2,
                                     child: const Text('Month'),
                                     onTap: () {
-                                       value.setOverviewGraph = value.transactionList
+                                      value.setOverviewGraph = value
+                                          .transactionList
                                           .where((element) =>
                                               element.date.month ==
                                                   DateTime.now().month &&
                                               element.date.year ==
                                                   DateTime.now().year)
                                           .toList();
-                                     value.dateNotifier = "Month";
+                                      value.dateNotifier = "Month";
                                     },
                                   )
                                 ],
@@ -158,7 +163,6 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   indicatorSize: TabBarIndicatorSize.label,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-        
                     color: ThemeColor.themeColors,
                   ),
                   tabs: [
@@ -211,7 +215,6 @@ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 ),
               ),
               Expanded(
-              
                   child: TabBarView(
                       controller: tabsController,
                       children: const [

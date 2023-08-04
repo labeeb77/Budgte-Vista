@@ -5,12 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../database/category/category_db.dart';
 import '../../database/category/category_provider.dart';
-import '../../database/transaction/transaction_db.dart';
+
 import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
-import '../category/category_popup.dart';
+
 import '../home/widgets/colors.dart';
 
 class UpdateTransaction extends StatelessWidget {
@@ -23,8 +22,8 @@ class UpdateTransaction extends StatelessWidget {
   final int id;
   final TransactionModel object;
 
-  TextEditingController amountEditingController = TextEditingController();
-  TextEditingController noteEditingController = TextEditingController();
+  final TextEditingController amountEditingController = TextEditingController();
+  final TextEditingController noteEditingController = TextEditingController();
 
   final __formkey = GlobalKey<FormState>();
 
@@ -32,9 +31,9 @@ class UpdateTransaction extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<TransactionProvider>(context, listen: false).categoryId =
         object.category.id;
-    amountEditingController =
-        TextEditingController(text: object.amount.toString());
-    noteEditingController = TextEditingController(text: object.notes);
+    amountEditingController.text =
+        object.amount.toString();
+    noteEditingController.text =  object.notes;
     Provider.of<TransactionProvider>(context, listen: false).selectedDate =
         object.date;
     Provider.of<TransactionProvider>(context, listen: false)
@@ -140,13 +139,23 @@ class UpdateTransaction extends StatelessWidget {
                       },
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      categoryAddPopup(
-                          context, false, selectedCategoryType.value);
-                    },
-                    icon: const Icon(
-                      Icons.add,
+                  Consumer<TransactionProvider>(
+                    builder: (context, value, child) => IconButton(
+                      onPressed: () {
+                        value.updateTransaction(id, object);
+                        Navigator.of(context).pop();
+                        AnimatedSnackBar.rectangle(
+                                'Success', 'Transaction updated successfully..',
+                                type: AnimatedSnackBarType.success,
+                                brightness: Brightness.light,
+                                duration: const Duration(seconds: 3))
+                            .show(
+                          context,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                      ),
                     ),
                   ),
                 ],
@@ -207,6 +216,7 @@ class UpdateTransaction extends StatelessWidget {
                     value.dateSelect(selectedDateTemp);
                   },
                   icon: const Icon(Icons.calendar_month),
+                  // ignore: unnecessary_null_comparison
                   label: Text(value.selectedDate == null
                       ? parseDate(DateTime.now())
                       : parseDate(

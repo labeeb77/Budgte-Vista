@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../home/widgets/colors.dart';
 
 class AboutPage extends StatelessWidget {
@@ -21,23 +20,25 @@ class AboutPage extends StatelessWidget {
       body: Padding(
         padding:
             const EdgeInsets.only(top: 100, bottom: 200, left: 30, right: 30),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 15,
-                offset: Offset(5, 5),
-              ),
-              BoxShadow(
-                color: Colors.white12,
-                blurRadius: 15,
-                offset: Offset(-5, -5),
-              ),
-            ],
-          ),
+        // child: Container(
+        // decoration: BoxDecoration(
+        //   color: Colors.white,
+        //   borderRadius: BorderRadius.circular(12),
+        //   boxShadow: const [
+        //     BoxShadow(
+        //       color: Colors.grey,
+        //       blurRadius: 15,
+        //       offset: Offset(5, 5),
+        //     ),
+        //     BoxShadow(
+        //       color: Colors.white12,
+        //       blurRadius: 15,
+        //       offset: Offset(-5, -5),
+        //     ),
+        //   ],
+        // ),
+        child: Card(
+          elevation: 10,
           child: Center(
             child: Column(
               children: [
@@ -59,9 +60,9 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
+                  children: [
                     Text('Developed by'),
                     Text(
                       'Labeeb. Ak',

@@ -4,7 +4,6 @@ import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/transactoins/slidable_widget.dart';
 import 'package:provider/provider.dart';
 
-
 import '../home/widgets/colors.dart';
 
 class RecentTransaction extends StatelessWidget {
@@ -13,8 +12,7 @@ class RecentTransaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionProvider>(
-      builder:
-          (context,newList,child) {
+      builder: (context, newList, child) {
         return newList.transactionList.isEmpty
             ? Center(
                 child: Text('No transactions found',
@@ -38,7 +36,9 @@ class RecentTransaction extends StatelessWidget {
                         height: 1,
                       );
                     },
-                    itemCount: newList.transactionList.length > 3 ? 3 : newList.transactionList.length),
+                    itemCount: newList.transactionList.length > 3
+                        ? 3
+                        : newList.transactionList.length),
               );
       },
     );

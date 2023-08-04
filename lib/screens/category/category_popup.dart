@@ -56,10 +56,11 @@ Future<void> categoryAddPopup(
                       name: add,
                       type: boolValue);
 
-                 
-                  Provider.of<CategoryProvider>(context,listen: false).refreshUI();
-                  Provider.of<CategoryProvider>(context,listen: false).insertCategory(category);
-                  
+                  Provider.of<CategoryProvider>(context, listen: false)
+                      .refreshUI();
+                  Provider.of<CategoryProvider>(context, listen: false)
+                      .insertCategory(category);
+
                   Navigator.of(ctx).pop();
                   AnimatedSnackBar.rectangle(
                           'Success', 'Category added successfully..',

@@ -1,9 +1,6 @@
 import 'dart:core';
-
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-
-
 import '../../models/category/category_model.dart';
 
 const categoryDbName = 'category-database';

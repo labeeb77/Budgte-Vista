@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/home/widgets/colors.dart';
+import 'package:provider/provider.dart';
 
 
 
-import '../sort_income,expense/sorted.dart';
+
 import '../transactoins/add_transaction.dart';
 import '../transactoins/recent_transaction.dart';
 
-import '../viewall/search_widget.dart';
 import '../viewall/view_all.dart';
 
 class ShowScreen extends StatelessWidget {
@@ -16,13 +17,14 @@ class ShowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Stack( 
       children: [
-        Scaffold(
+        Scaffold(    
+         
           body: Container(
             decoration: const BoxDecoration(
                 gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-              Color.fromARGB(255, 138, 31, 12),
+                  Color.fromARGB(255, 138, 31, 12),
               Color.fromARGB(255, 248, 134, 4)
             ])),
             child: Column(
@@ -32,24 +34,11 @@ class ShowScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.home_outlined,
-                            color: Colors.white,
-                            size: 26,
-                          )),
-                      IconButton(
-                          onPressed: () {
-                            showSearch(
-                                context: context,
-                                delegate: SearchTransaction());
-                          },
-                          icon: const Icon(
-                            Icons.search,
-                            color: Colors.white,
-                            size: 26,
-                          ))
+                     Text('  Budget Vista',style: GoogleFonts.philosopher(fontSize: 20,color: const Color.fromARGB(255, 216, 207, 207),fontWeight: FontWeight.bold),),
+                  const Padding(
+                     padding:  EdgeInsets.only(right: 10),
+                     child:  Icon(Icons.wallet,size: 26,color: Colors.white,),
+                   )
                     ],
                   ),
                 ),
@@ -158,11 +147,17 @@ Positioned myCard() {
     top: 75,
     left: 21,
     child: Card(
+      color: Colors.white,
       elevation: 20,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: SizedBox(
+      child: Container(
+        
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15)
+        ),
         width: double.infinity,
         height: 195,
         child: Padding(
@@ -172,13 +167,13 @@ Positioned myCard() {
             children: [
               Row(
                 children: [
-                  ValueListenableBuilder(
-                      valueListenable: balanceTotal,
+                  Consumer<TransactionProvider>(
+                      
                       builder: (cntext, value, Widget? _) {
                         return Text(
-                          balanceTotal.value < 0 ? "LOSS" : 'Available Balance',
+                          value.balanceTotal < 0 ? "LOSS" : 'Available Balance',
                           style: GoogleFonts.quicksand(
-                              color: balanceTotal.value < 0 ? const Color.fromARGB(255, 207, 36, 36)
+                              color: value.balanceTotal < 0 ? const Color.fromARGB(255, 207, 36, 36)
                             .withOpacity(0.8) : const Color.fromARGB(255, 62, 155, 82)
                             .withOpacity(0.8),
                               fontSize: 14,
@@ -190,10 +185,9 @@ Positioned myCard() {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: balanceTotal,
+                  Consumer<TransactionProvider>(
                     builder: (context, value, child) {
-                      var tbalance = balanceTotal.value;
+                      var tbalance = value.balanceTotal;
                       tbalance = tbalance < 0 ? tbalance * -1 : tbalance;
                       return Text(
                         '₹ $tbalance',
@@ -238,10 +232,10 @@ Positioned myCard() {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: incomeTotal,
+                  Consumer<TransactionProvider>(
+                    
                     builder: (context, value, child) {
-                      return Text('₹ ${incomeTotal.value}',
+                      return Text('₹ ${value.incomeTotal}',
                           style: GoogleFonts.quicksand(
                             fontSize: 26,
                             color: ThemeColor.themeColors,
@@ -249,11 +243,11 @@ Positioned myCard() {
                           ));
                     },
                   ),
-                  ValueListenableBuilder(
-                    valueListenable: expenseTotal,
+                  Consumer<TransactionProvider>(
+                    
                     builder: (context, value, child) {
                       return Text(
-                        '₹ ${expenseTotal.value}',
+                        '₹ ${value.expenseTotal}',
                         style: GoogleFonts.quicksand(
                             fontSize: 26,
                             color: ThemeColor.themeColors,

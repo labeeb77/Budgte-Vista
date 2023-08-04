@@ -23,7 +23,8 @@ class ScreenSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 240, 240),
-      appBar: AppBar(
+      appBar: AppBar( 
+        
         backgroundColor: ThemeColor.themeColors,
         title: Text('Settings',
             style: GoogleFonts.quicksand(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_money1/database/transaction/transaction_provider.dart';
 import 'package:my_money1/screens/viewall/search_all.dart';
+import 'package:provider/provider.dart';
 
-import '../../database/transaction/transaction_db.dart';
 import '../home/widgets/colors.dart';
 import '../transactoins/filters/date_filter.dart';
 import '../transactoins/filters/overview_filter.dart';
@@ -13,7 +14,10 @@ class History extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TransactionsDB.instance.refresh();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<TransactionProvider>().setOverviewTransaction =
+          context.read<TransactionProvider>().transactionList;
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -34,9 +38,9 @@ class History extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(
-          children: const [
+          children:  [
             SearchAll(),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(8.0),
               child: MyTransactions(),
             ),

@@ -6,7 +6,7 @@ import 'package:my_money1/database/category/category_provider.dart';
 import 'package:provider/provider.dart';
 
 
-import '../../database/category/category_db.dart';
+
 import '../../models/category/category_model.dart';
 import '../home/widgets/colors.dart';
 import 'category_popup.dart';

@@ -9,51 +9,47 @@ import '../../models/category/category_model.dart';
 import '../../models/transaction/transaction_model.dart';
 import '../home/widgets/colors.dart';
 
-
 class ExpenseChart extends StatelessWidget {
-   const ExpenseChart({super.key});
-
- 
-
-
+  const ExpenseChart({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer<TransactionProvider>(
-        
-         builder: (context, value, child) {
+        builder: (context, value, child) {
           var expenseData = value.overViewGraphtransaction
-          .where((element) => element.category.type == CategoryType.expense).toList();
+              .where((element) => element.category.type == CategoryType.expense)
+              .toList();
           return value.overViewGraphtransaction.isEmpty
-          ?  Center(child: Text('No data',style: GoogleFonts.quicksand(color: ThemeColor.themeColors),),)
-          :Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: SfCircularChart(
-              backgroundColor: Colors.white,
-              legend: Legend(
-                isVisible: true,
-                overflowMode: LegendItemOverflowMode.scroll,
-                alignment: ChartAlignment.center
-              ),
-              
-              series: <CircularSeries>[
-                   PieSeries<TransactionModel,String>(
-                  
-                  dataSource: expenseData,
-                  xValueMapper: (TransactionModel data, _) => 
-                  data.category.name,
-                  yValueMapper: (TransactionModel data, _) => 
-                  data.amount,
-                  
-                  dataLabelSettings: const DataLabelSettings(isVisible: true)
+              ? Center(
+                  child: Text(
+                    'No data',
+                    style: GoogleFonts.quicksand(color: ThemeColor.themeColors),
+                  ),
                 )
-              ],
-            ),
-          );
-           
-         },),
+              : Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: SfCircularChart(
+                    backgroundColor: Colors.white,
+                    legend: Legend(
+                        isVisible: true,
+                        overflowMode: LegendItemOverflowMode.scroll,
+                        alignment: ChartAlignment.center),
+                    series: <CircularSeries>[
+                      PieSeries<TransactionModel, String>(
+                          dataSource: expenseData,
+                          xValueMapper: (TransactionModel data, _) =>
+                              data.category.name,
+                          yValueMapper: (TransactionModel data, _) =>
+                              data.amount,
+                          dataLabelSettings:
+                              const DataLabelSettings(isVisible: true))
+                    ],
+                  ),
+                );
+        },
+      ),
     );
   }
 }
