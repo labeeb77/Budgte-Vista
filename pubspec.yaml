@@ -36,7 +36,7 @@ dependencies:
   flutter_slidable: ^2.0.0
   flutter_svg: ^1.1.6
   font_awesome_flutter: ^10.3.0
-  google_fonts: ^4.0.1
+  google_fonts: ^5.1.0
   google_nav_bar: ^5.0.6
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -46,8 +46,8 @@ dependencies:
   share_plus: ^6.3.0
   shared_preferences: ^2.0.17
   smooth_page_indicator: ^1.0.0+2
-  syncfusion_flutter_charts: ^20.4.44
-  url_launcher: ^6.1.8
+  syncfusion_flutter_charts: ^22.1.39 
+  url_launcher: ^6.1.12
 
 dev_dependencies:
   build_runner: ^2.3.3
@@ -60,7 +60,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/wallet.png"
+  image_path: "assets/images/budget vista icon.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
@@ -76,6 +76,7 @@ flutter:
     - assets/images/undraw_digital_currency_qpak.svg
     - assets/images/undraw_investing_re_bov7.svg
     - assets/images/wallet.png
+    - assets/images/budget vista icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
